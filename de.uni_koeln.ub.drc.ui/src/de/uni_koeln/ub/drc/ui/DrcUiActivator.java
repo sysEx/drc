@@ -29,13 +29,15 @@ import com.quui.sinist.XmlDb;
 
 import de.uni_koeln.ub.drc.data.Index;
 import de.uni_koeln.ub.drc.data.User;
+import de.uni_koeln.ub.drc.ui.facades.SessionContextHelper;
 import de.uni_koeln.ub.drc.ui.views.SearchView;
 
 /**
  * The activator class controls the plug-in life cycle
  */
 /**
- * @author Fabian Steeg (fsteeg), Mihail Atanassov (matana)
+ * @author Fabian Steeg (fsteeg), Mihail Atanassov (matana), Claes Neuefeind
+ *         (claesn)
  * 
  */
 public class DrcUiActivator extends Plugin {
@@ -47,7 +49,6 @@ public class DrcUiActivator extends Plugin {
 	// The shared instance
 	private static DrcUiActivator plugin;
 	private XmlDb db;
-	private ILoginContext loginContext;
 	private SearchView searchView;
 	private BundleContext context;
 
@@ -132,7 +133,7 @@ public class DrcUiActivator extends Plugin {
 	 * @return The context for the logged in user.
 	 */
 	public ILoginContext getLoginContext() {
-		return loginContext;
+		return SessionContextHelper.getContext().getLoginContext();
 	}
 
 	/**
@@ -153,7 +154,7 @@ public class DrcUiActivator extends Plugin {
 	 *            The ILoginContext
 	 */
 	public void setLoginContext(ILoginContext loginContext) {
-		this.loginContext = loginContext;
+		SessionContextHelper.getContext().setLoginContext(loginContext);
 		this.searchView.setInput();
 		this.searchView.select();
 	}
