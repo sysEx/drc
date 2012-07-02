@@ -52,8 +52,8 @@ import de.uni_koeln.ub.drc.data.Box;
 import de.uni_koeln.ub.drc.data.Index;
 import de.uni_koeln.ub.drc.data.Page;
 import de.uni_koeln.ub.drc.data.Word;
-import de.uni_koeln.ub.drc.ui.DrcUiActivator;
 import de.uni_koeln.ub.drc.ui.Messages;
+import de.uni_koeln.ub.drc.ui.facades.SessionContextSingleton;
 
 /**
  * View containing the scanned page used to check the original word while
@@ -447,8 +447,9 @@ public final class CheckView extends ViewPart {
 
 	private InputStream getInputStream(final Page page) {
 		InputStream in = new BufferedInputStream(new ByteArrayInputStream(
-				Index.loadImageFor(DrcUiActivator.getDefault().currentUser()
-						.collection(), DrcUiActivator.getDefault().db(), page)));
+				Index.loadImageFor(SessionContextSingleton.getInstance()
+						.getCurrentUser().collection(), SessionContextSingleton
+						.getInstance().db(), page)));
 		return in;
 	}
 
