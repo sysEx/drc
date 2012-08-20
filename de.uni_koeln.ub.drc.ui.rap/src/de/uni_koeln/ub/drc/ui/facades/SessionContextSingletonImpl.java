@@ -78,7 +78,7 @@ public class SessionContextSingletonImpl implements
 	public XmlDb getUserDb() {
 		if (Index.LocalDb().isAvailable())
 			return Index.LocalDb();
-		return new XmlDb("http://bob.spinfo.uni-koeln.de", 8080, "drc", "crd"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return new XmlDb("bob.spinfo.uni-koeln.de", 8080, "drc", "crd"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Override
@@ -155,6 +155,7 @@ public class SessionContextSingletonImpl implements
 
 	private void logout() {
 		try {
+			System.out.println("Logged out: " + getCurrentUser()); //$NON-NLS-1$
 			loginContext.logout();
 		} catch (LoginException e) {
 			e.printStackTrace();
