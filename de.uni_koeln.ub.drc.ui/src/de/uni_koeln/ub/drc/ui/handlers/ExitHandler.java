@@ -19,6 +19,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import de.uni_koeln.ub.drc.ui.Messages;
 import de.uni_koeln.ub.drc.ui.facades.IDialogConstantsHelper;
+import de.uni_koeln.ub.drc.ui.facades.SessionContextSingleton;
 import de.uni_koeln.ub.drc.ui.views.EditView;
 
 /**
@@ -47,6 +48,7 @@ public class ExitHandler extends AbstractHandler {
 				ev.doSave(new NullProgressMonitor());
 			}
 		}
+		SessionContextSingleton.getInstance().exit();
 		return PlatformUI.getWorkbench().close();
 	}
 

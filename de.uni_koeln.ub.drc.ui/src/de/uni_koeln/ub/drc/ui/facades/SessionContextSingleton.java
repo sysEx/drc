@@ -1,3 +1,10 @@
+/**************************************************************************************************
+ * Copyright (c) 2012 Mihail Atanassov. All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * <p/>
+ * Contributors: Mihail Atanassov - initial API and implementation
+ *************************************************************************************************/
 package de.uni_koeln.ub.drc.ui.facades;
 
 import org.eclipse.equinox.security.auth.ILoginContext;
@@ -10,7 +17,7 @@ import de.uni_koeln.ub.drc.data.User;
 /**
  * Provides one (RCP) or multiple (RAP) session contexts.
  * 
- * @author Claes Neuefeind (claesn)
+ * @author Claes Neuefeind (claesn), Mihail Atanassov (matana)
  * 
  */
 public class SessionContextSingleton {
@@ -72,6 +79,13 @@ public class SessionContextSingleton {
 	 */
 	public Image loadImage(String location) {
 		return PROVIDER.loadImage(location);
+	}
+
+	/**
+	 * Exit the application.
+	 */
+	public void exit() {
+		PROVIDER.exit();
 	}
 
 }

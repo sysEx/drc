@@ -1,3 +1,10 @@
+/**************************************************************************************************
+ * Copyright (c) 2012 Mihail Atanassov. All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * <p/>
+ * Contributors: Mihail Atanassov - initial API and implementation
+ *************************************************************************************************/
 package de.uni_koeln.ub.drc.ui.facades;
 
 import java.net.URL;
@@ -12,7 +19,15 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.auth.ILoginContext;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 
 import com.quui.sinist.XmlDb;
 
@@ -23,7 +38,7 @@ import de.uni_koeln.ub.drc.ui.DrcUiActivator;
 /**
  * Provides separate session contexts for each logged in user (RAP).
  * 
- * @author Claes Neuefeind (claesn)
+ * @author Claes Neuefeind (claesn), Mihail Atanassov (matana)
  * 
  */
 public class SessionContextSingletonImpl implements
@@ -63,8 +78,7 @@ public class SessionContextSingletonImpl implements
 	public XmlDb getUserDb() {
 		if (Index.LocalDb().isAvailable())
 			return Index.LocalDb();
-		return new XmlDb(
-				"http://hydra1.spinfo.uni-koeln.de", 8080, "guest", "guest"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return new XmlDb("http://bob.spinfo.uni-koeln.de", 8080, "drc", "crd"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Override
@@ -99,4 +113,51 @@ public class SessionContextSingletonImpl implements
 		return desc.createImage();
 	}
 
+	@Override
+	public void exit() {
+		logout();
+		redirect();
+	}
+
+	private void redirect() {
+		final Display display = Display.getCurrent();
+		RWT.getLifeCycle().addPhaseListener(new PhaseListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void afterPhase(PhaseEvent event) {
+				if (Display.getCurrent() == null
+						|| display == Display.getCurrent()) {
+					// Uses a non-public API, but
+					// currently this is the only
+					// solution
+					JavaScriptResponseWriter writer = ContextProvider
+							.getStateInfo().getResponseWriter();
+					String url = "http://www.crestomazia.ch/application/users"; //$NON-NLS-1$
+					writer.write("window.location.href=\"" + url + "\";"); //$NON-NLS-1$ //$NON-NLS-2$
+					RWT.getRequest().getSession().setMaxInactiveInterval(1);
+					RWT.getLifeCycle().removePhaseListener(this);
+				}
+			}
+
+			@Override
+			public PhaseId getPhaseId() {
+				return PhaseId.ANY;
+			}
+
+			@Override
+			public void beforePhase(PhaseEvent event) {
+			};
+
+		});
+	}
+
+	private void logout() {
+		try {
+			loginContext.logout();
+		} catch (LoginException e) {
+			e.printStackTrace();
+		}
+	}
 }

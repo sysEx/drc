@@ -1,3 +1,10 @@
+/**************************************************************************************************
+ * Copyright (c) 2012 Mihail Atanassov. All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0 which accompanies this
+ * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * <p/>
+ * Contributors: Mihail Atanassov - initial API and implementation
+ *************************************************************************************************/
 package de.uni_koeln.ub.drc.ui.facades;
 
 import java.net.URL;
@@ -23,7 +30,7 @@ import de.uni_koeln.ub.drc.ui.DrcUiActivator;
 /**
  * Provides separate session contexts for each logged in user (RAP).
  * 
- * @author Claes Neuefeind (claesn)
+ * @author Claes Neuefeind (claesn), Mihaial Atanassov (matana)
  * 
  */
 public class SessionContextSingletonImpl implements
@@ -66,8 +73,7 @@ public class SessionContextSingletonImpl implements
 	public XmlDb getUserDb() {
 		if (Index.LocalDb().isAvailable())
 			return Index.LocalDb();
-		return new XmlDb(
-				"http://hydra1.spinfo.uni-koeln.de", 8080, "guest", "guest"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return new XmlDb("http://bob.spinfo.uni-koeln.de", 8080, "drc", "crd"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	@Override
@@ -100,6 +106,30 @@ public class SessionContextSingletonImpl implements
 				path, Collections.EMPTY_MAP);
 		ImageDescriptor desc = ImageDescriptor.createFromURL(url);
 		return desc.createImage();
+	}
+
+	@Override
+	public void exit() {
+		logout();
+		stopBundle();
+
+	}
+
+	private void stopBundle() {
+		try {
+			DrcUiActivator.getDefault().stop(
+					DrcUiActivator.getDefault().getBundleContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void logout() {
+		try {
+			loginContext.logout();
+		} catch (LoginException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
