@@ -129,6 +129,8 @@ public final class SearchView extends ViewPart {
 		initTableViewer(parent);
 		addPageInfoBar(parent);
 		GridLayoutFactory.fillDefaults().generateLayout(parent);
+		setInput();
+		select();
 	}
 
 	@Override
