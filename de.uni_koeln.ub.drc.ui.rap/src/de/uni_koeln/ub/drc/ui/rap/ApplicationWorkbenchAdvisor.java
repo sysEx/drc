@@ -22,7 +22,7 @@ import de.uni_koeln.ub.drc.ui.ApplicationWorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "de.uni_koeln.ub.drc.ui.perspective"; //$NON-NLS-1$
+	private static final String PERSPECTIVE_ID = "de.uni_koeln.ub.drc.ui.perspectivealternative"; //$NON-NLS-1$
 
 	@Override
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
