@@ -44,13 +44,16 @@ public class EntryPoint implements IEntryPoint {
 		BundleContext bundleContext = DrcUiActivator.getDefault().getBundle()
 				.getBundleContext();
 		login(bundleContext);
-		RWT.getSessionStore().getHttpSession().setMaxInactiveInterval(120);
+		RWT.getSessionStore().getHttpSession().setMaxInactiveInterval(300);
 		RWT.getSessionStore().addSessionStoreListener(
 				new SessionStoreListener() {
 
 					@Override
 					public void beforeDestroy(SessionStoreEvent event) {
-						// TODO Session cleanup
+						System.out
+								.println("Session time out - changes were saved before destroying the session: ID=" //$NON-NLS-1$
+										+ event.getSessionStore()
+												.getHttpSession().getId());
 					}
 				});
 		return PlatformUI.createAndRunWorkbench(display, advisor);

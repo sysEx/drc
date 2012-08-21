@@ -8,6 +8,8 @@
 package de.uni_koeln.ub.drc.ui.facades;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 
 import javax.security.auth.login.LoginException;
@@ -15,6 +17,7 @@ import javax.security.auth.login.LoginException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.security.auth.ILoginContext;
@@ -28,12 +31,14 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 
 import com.quui.sinist.XmlDb;
 
 import de.uni_koeln.ub.drc.data.Index;
 import de.uni_koeln.ub.drc.data.User;
 import de.uni_koeln.ub.drc.ui.DrcUiActivator;
+import de.uni_koeln.ub.drc.ui.views.EditView;
 
 /**
  * Provides separate session contexts for each logged in user (RAP).
@@ -115,6 +120,7 @@ public class SessionContextSingletonImpl implements
 
 	@Override
 	public void exit() {
+		// saveIfDirty();
 		logout();
 		redirect();
 	}
@@ -155,10 +161,28 @@ public class SessionContextSingletonImpl implements
 
 	private void logout() {
 		try {
-			System.out.println("Logged out: " + getCurrentUser()); //$NON-NLS-1$
+			System.out
+					.println("Logged out " + getDate() + " : " + getCurrentUser()); //$NON-NLS-1$ //$NON-NLS-2$
 			loginContext.logout();
 		} catch (LoginException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void saveIfDirty() {
+		// TODO Save changes automatically before logout
+		EditView ev = (EditView) PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage()
+				.findView(EditView.ID);
+		if (ev != null && ev.isDirty()) {
+			System.out.println("Save last changes..."); //$NON-NLS-1$
+			ev.doSave(new NullProgressMonitor());
+		}
+	}
+
+	private String getDate() {
+		SimpleDateFormat dateformatter = new SimpleDateFormat(
+				"E yyyy.MM.dd 'at' hh:mm:ss a"); //$NON-NLS-1$
+		return dateformatter.format(Calendar.getInstance().getTime());
 	}
 }
